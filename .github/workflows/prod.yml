@@ -1,0 +1,128 @@
+name: Deploy Serverless
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Install dependencies
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Install flake8 (Linter)
+        run: pip install flake8
+
+      - name: Lint code
+        run: flake8
+
+  security-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Install dependencies
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Install safety (Security scan)
+        run: pip install safety
+
+      - name: Run Security Scan
+        run: safety check --full-report -r requirements.txt
+      
+  deploy:
+    name: deploy
+    environment: prod
+    needs:  [ lint, security-scan ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        node-version: [14.x]
+        python-version: ["3.10"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install serverless
+        run: |
+          npm i -g serverless serverless-domain-manager
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create env
+        run: |
+          cat > prod.env.json << EOF
+          ${{ secrets.ENV_PROD }}
+          EOF
+  
+      - name: Config serverless
+        run: serverless config credentials --provider aws --key ${{ secrets.AWS_KEY_ID_PROD }} --secret ${{ secrets.AWS_SECRET_PROD }} -n serverless-deploy-seisms-prod --verbose
+      
+      - name: Create Domain
+        run: sls create_domain -s prod -c serverless_prod.yml --verbose
+        env:
+          SLS_DEBUG: '*'
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID_PROD }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_PROD }}
+      
+                
+      - name: Install dependencies for layer
+        run: |
+          mkdir -p layers/alliotdependencies/python
+          pip install -r requirements.txt -t layers/seismsdependencies/python
+          
+
+      - name: Deploy with Serverless
+        run: sls deploy -s prod -c serverless_prod.yml --verbose
+        env:
+          SLS_DEBUG: '*'
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID_PROD }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_PROD }}
