@@ -37,7 +37,7 @@ class S3Client:
                 ExpressionType='SQL',
                 Expression=expression,
                 InputSerialization={'CSV': {'FileHeaderInfo': 'Use', 'FieldDelimiter': ','}},
-                OutputSerialization={'JSON': {'RecordDelimiter': ','}}
+                OutputSerialization={'JSON': {'RecordDelimiter': '\n'}}
             )
             logging.info(f"Response from s3: {response}")
             event_stream = response['Payload']
@@ -46,11 +46,13 @@ class S3Client:
             for event in event_stream:
                 if 'Records' in event:
                     logging.info(f"Records event: {event}")
-                    raw_records = event['Records']['Payload'].decode('utf-8')
+                    raw_records = event['Records']['Payload'].decode('utf-8').split('\n')
                     logging.info(f"Raw records: {raw_records}")
-                    parsed_records = re.sub(r',\s*}', '}', raw_records)
-                    logging.info(f"Parsed records: {parsed_records}")
-                    data = json.loads(f"[{parsed_records}]")
+                    for raw_record in raw_records:
+                        if raw_record:
+                            record = json.loads(raw_record)
+                            logging.info(f"Record: {record}")
+                            data.append(record)
                 elif 'End' in event:
                     print('Result is complete')
                     end_event_received = True
