@@ -35,7 +35,7 @@ class S3Client:
                 ExpressionType='SQL',
                 Expression=expression,
                 InputSerialization={'CSV': {'FileHeaderInfo': 'Use', 'FieldDelimiter': ','}},
-                OutputSerialization={'CSV': {}}
+                OutputSerialization={'JSON': {}}
             )
             logging.info(f"Response from s3: {response}")
             event_stream = response['Payload']
