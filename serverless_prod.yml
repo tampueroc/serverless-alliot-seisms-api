@@ -12,6 +12,14 @@ provider:
   versionFunctions: false
   environment:
     ${file(${self:custom.stage}.env.json)}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:'PutObject'
+          Resource:
+            - arn:aws:s3:::seisms-bucket/*
 
 layers:
   seismsdependencies:
