@@ -17,9 +17,10 @@ def get_seisms(event: dict, context: dict):
         s3_client = S3Client()
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
+        logging.info(f"Response from s3: {s3_response}")
         return {
             'statusCode': 200,
-            'body': json.dumps(s3_response['Payload'].read().decode('utf-8'))
+            'body': json.dumps(s3_response)
         }
     except Exception as e:
         print(e)
