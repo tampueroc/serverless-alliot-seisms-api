@@ -135,4 +135,4 @@ node_modules
 .env_config
 .vscode
 
-.env_config/*
+.env_config
