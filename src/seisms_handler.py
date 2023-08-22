@@ -44,6 +44,10 @@ def create_seisms(event: dict, context: dict):
             logging.info(f"Uploading file to s3 {f.name}")
             s3_client.upload_file(f.name, 'seisms-bucket', f.name)
             f.close()
+        return {
+            'statusCode': 200,
+            'body': json.dumps('Ok')
+        }
     except Exception as e:
         print(e)
         return {
