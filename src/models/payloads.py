@@ -23,10 +23,10 @@ class GetEntriesQueryParameters(BaseModel):
         if self.country:
             query += f"s.country = '{self.country}' AND "
         if self.dateLower:
-            query += f's."timestamp" >= {int(time.mktime(self.dateLower.timetuple()))} AND '
+            query += f'CAST(s."timestamp" as int) >= {int(time.mktime(self.dateLower.timetuple()))} AND '
         if self.dateUpper:
             # TODO: Fix this, it's not working
-            query += f's."timestamp" <= {int(time.mktime(self.dateUpper.timetuple()))} AND '
+            query += f'CAST(s."timestamp" as int) <= {int(time.mktime(self.dateUpper.timetuple()))} AND '
         if self.magnitudeLower:
             query += f"CAST(s.magnitude as float) >= {self.magnitudeLower} AND "
         if self.magnitudeUpper:
