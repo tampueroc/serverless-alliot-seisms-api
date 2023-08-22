@@ -45,8 +45,11 @@ class S3Client:
             data = []
             for event in event_stream:
                 if 'Records' in event:
+                    logging.info(f"Records event: {event}")
                     raw_records = event['Records']['Payload'].decode('utf-8')
+                    logging.info(f"Raw records: {raw_records}")
                     parsed_records = re.sub(r',\s*}', '}', raw_records)
+                    logging.info(f"Parsed records: {parsed_records}")
                     data = json.loads(f"[{parsed_records}]")
                 elif 'End' in event:
                     print('Result is complete')
