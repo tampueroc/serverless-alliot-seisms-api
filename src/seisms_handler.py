@@ -36,16 +36,14 @@ def create_seisms(event: dict, context: dict):
         event_body = json.loads(event['body'])
         seisms_entries = [GetSeismPayload(**seism) for seism in event_body]
         s3_client = S3Client()
-        os.chdir('/tmp')
-        with open("seisms.csv", "w") as f:
+        filename = 'tmp/seisms.csv'
+        with open(filename, "w") as f:
             f.write('timestamp,country,magnitude\n')
             for seism in seisms_entries:
                 logging.info(f"Writing seism {seism}")
                 f.write(f"{seism.timestamp},{seism.country},{seism.magnitude}")
                 f.write('\n')
-            logging.info(f"Uploading file to s3 {f.name}")
-            s3_client.upload_file(f.name, 'seisms-bucket', 'seism-data')
-            f.close()
+            s3_client.upload_file(filename, 'seisms-bucket', 'seisms.csv')
         return {
             'statusCode': 200,
             'body': json.dumps('Ok')
