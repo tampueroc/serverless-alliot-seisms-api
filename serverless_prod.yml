@@ -11,9 +11,22 @@ provider:
   environment:
     ${file(.env_config/${self:custom.stage}.env.json)}
 
-plugins:
-  - serverless-offline
-  - serverless-s3-local
+layers:
+  odoodependencies:
+    path: layers/seismsdependencies
+    description: Python dependencies for Seisms
+    retain: false
+    compatibleRuntimes:
+      - python3.10
+    compatibleArchitectures:
+      - "arm64"
+      - "x86_64"
+
+package:
+  patterns:
+    - '!*'
+    - '!seed/**'
+    - 'src/**'
 
 functions:
   get-entries:
@@ -34,14 +47,11 @@ functions:
           method: post
 
 custom:
-  stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-west-2'}
-  profile: ${opt:provider, 'serverless-dev'}
+  stage: ${opt:stage, 'prod'}
+  region: ${opt:region, 'us-east-2'}
+  profile: ${opt:provider, 'serverless-deploy-seisms-prod'}
   serverless-offline:
     useChildProcesses: true
-  s3:
-    host: localhost
-    directory: /tmp/s3
 
 resources:
   Resources:
