@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import boto3
@@ -44,7 +45,7 @@ class S3Client:
             for event in event_stream:
                 if 'Records' in event:
                     logging.info(f"Adding data to response: {event['Records']['Payload'].decode('utf-8')}")
-                    data.append(event['Records']['Payload'].decode('utf-8'))
+                    data.append(json.loads(event['Records']['Payload'].decode('utf-8')))
                 elif 'End' in event:
                     print('Result is complete')
                     end_event_received = True
