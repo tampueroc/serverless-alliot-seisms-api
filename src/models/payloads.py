@@ -21,7 +21,7 @@ class GetEntriesQueryParameters(BaseModel):
     def to_sql_query(self):
         query = """SELECT * FROM s3object s WHERE """
         if self.country:
-            query += f"s.country = {self.country} AND "
+            query += f"s.country = '{self.country}' AND "
         if self.dateLower:
             query += f's."timestamp" >= {int(time.mktime(self.dateLower.timetuple()))} AND '
         if self.dateUpper:
