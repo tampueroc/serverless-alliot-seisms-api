@@ -49,6 +49,7 @@ class S3Client:
                     end_event_received = True
             if not end_event_received:
                 raise Exception("End event not received, request incomplete.")
+            return data
         except Exception as e:
             logging.error(f"Error getting files from s3: {e}")
             raise e
