@@ -40,10 +40,11 @@ def create_seisms(event: dict, context: dict):
         with open("seisms.csv", "w") as f:
             f.write('timestamp,country,magnitude\n')
             for seism in seisms_entries:
+                logging.info(f"Writing seism {seism}")
                 f.write(f"{seism.timestamp},{seism.country},{seism.magnitude}")
                 f.write('\n')
             logging.info(f"Uploading file to s3 {f.name}")
-            s3_client.upload_file(f.name, 'seisms-bucket', f.name)
+            s3_client.upload_file(f.name, 'seisms-bucket', 'seism-data')
             f.close()
         return {
             'statusCode': 200,
