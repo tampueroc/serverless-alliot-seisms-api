@@ -41,6 +41,7 @@ def create_seisms(event: dict, context: dict):
             for seism in seisms_entries:
                 f.write(f"{seism.timestamp},{seism.country},{seism.magnitude}")
                 f.write('\n')
+            logging.info(f"Uploading file to s3 {f.name}")
             s3_client.upload_file(f.name, 'seisms-bucket', f.name)
             f.close()
     except Exception as e:
