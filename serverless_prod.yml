@@ -15,9 +15,11 @@ provider:
   iam:
     role:
       statements:
-        - Effect: Allow
+        - Effect: 'Allow' 
           Action:
-            - s3:'PutObject'
+          - 's3:PutObject'
+          - 's3:PutObjectAcl'
+          - 's3:GetObject'
           Resource:
             - arn:aws:s3:::seisms-bucket/*
 
