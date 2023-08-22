@@ -14,7 +14,7 @@ provider:
     ${file(${self:custom.stage}.env.json)}
 
 layers:
-  odoodependencies:
+  seismsdependencies:
     path: layers/seismsdependencies
     description: Python dependencies for Seisms
     retain: false
