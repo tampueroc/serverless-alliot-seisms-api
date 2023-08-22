@@ -1,3 +1,5 @@
+import datetime
+import time
 from typing import Optional
 from pydantic import BaseModel
 
@@ -10,22 +12,21 @@ class GetSeismPayload(BaseModel):
 
 class GetEntriesQueryParameters(BaseModel):
     country: Optional[str] = None
-    dateLower: Optional[str] = None
-    dateUpper: Optional[str] = None
+    dateLower: Optional[datetime.date] = None
+    dateUpper: Optional[datetime.date] = None
     magnitudeLower: Optional[float] = None
     magnitudeUpper: Optional[float] = None
     skip: Optional[int] = None
 
     def to_sql_query(self):
-        query = """SELECT * FROM S3Object WHERE """
+        query = """SELECT * FROM s3object s WHERE """
         if self.country:
-            query += f"country = '{self.country}' AND "
+            query += f"s.country = {self.country} AND "
         if self.dateLower:
-            # TODO: Fix this, it's not working
-            query += f"timestamp >= '{self.dateLower}' AND "
+            query += f's."timestamp" >= {int(time.mktime(self.dateLower.timetuple()))} AND '
         if self.dateUpper:
             # TODO: Fix this, it's not working
-            query += f"timestamp <= '{self.dateUpper}' AND "
+            query += f's."timestamp" <= {int(time.mktime(self.dateUpper.timetuple()))} AND '
         if self.magnitudeLower:
             query += f"CAST(s.magnitude as float) >= {self.magnitudeLower} AND "
         if self.magnitudeUpper:
