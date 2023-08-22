@@ -29,7 +29,7 @@ class S3Client:
     def get_files(self, bucket_name, expression):
         try:
             logging.info(f"Getting files from s3 bucket {bucket_name} with expression {expression}")
-            response =  self.s3.select_object_content(
+            response = self.s3.select_object_content(
                 Bucket=bucket_name,
                 Key='seisms.csv',
                 ExpressionType='SQL',
@@ -37,11 +37,13 @@ class S3Client:
                 InputSerialization={'CSV': {'FileHeaderInfo': 'Use', 'FieldDelimiter': ','}},
                 OutputSerialization={'CSV': {}}
             )
+            logging.info(f"Response from s3: {response}")
             event_stream = response['Payload']
             logging.info(f"Event stream: {event_stream}")
+            data = []
             for event in event_stream:
                 if 'Records' in event:
-                    data = event['Records']['Payload']
+                    data.append(event['Records']['Payload'])
                 elif 'End' in event:
                     print('Result is complete')
                     end_event_received = True
