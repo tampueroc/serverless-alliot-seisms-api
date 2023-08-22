@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import boto3
+import re
 logging.getLogger().setLevel(logging.INFO)
 
 
@@ -44,9 +45,9 @@ class S3Client:
             data = []
             for event in event_stream:
                 if 'Records' in event:
-                    logging.info(f"Adding data to response: {event['Records']['Payload'].decode('utf-8')}")
-                    for record in event['Records']['Payload'].decode('utf-8').split(','):
-                        data.append(json.loads(record))
+                    raw_records = event['Records']['Payload'].decode('utf-8')
+                    parsed_records = re.sub(r',\s*}', '}', raw_records)
+                    data = json.loads(f"[{parsed_records}]")
                 elif 'End' in event:
                     print('Result is complete')
                     end_event_received = True
