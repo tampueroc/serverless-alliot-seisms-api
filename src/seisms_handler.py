@@ -1,7 +1,6 @@
 import datetime
 import json
 import logging
-import os
 
 from .common.s3_client import S3Client
 
