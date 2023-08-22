@@ -1,8 +1,7 @@
-
-
 import datetime
 import json
 import logging
+import os
 
 from .common.s3_client import S3Client
 
@@ -36,6 +35,7 @@ def create_seisms(event: dict, context: dict):
         event_body = json.loads(event['body'])
         seisms_entries = [GetSeismPayload(**seism) for seism in event_body]
         s3_client = S3Client()
+        os.chdir('/tmp')
         with open("seisms.csv", "w") as f:
             f.write('timestamp,country,magnitude\n')
             for seism in seisms_entries:
