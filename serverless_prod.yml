@@ -50,7 +50,12 @@ functions:
           request:
             parameters:
               querystrings:
-                url: true
+                country: false
+                dateLower: false
+                dateUpper: false
+                magnitudeLower: false
+                magnitudeUpper: false
+                skip: false
   create-entries:
     handler: src/seisms_handler.create_seisms
     events:
