@@ -12,8 +12,8 @@ logging.getLogger().setLevel(logging.INFO)
 def get_seisms(event: dict, context: dict):
     try:
         logging.info(f"Starting get_seisms lambda function {datetime.datetime.utcnow()} with event: {event} and context: {context}")
-        query_string_parameters = GetEntriesQueryParameters(**event['queryStringParameters'])
-        logging.info(f"Query string parameters: {query_string_parameters}")
+        query_string_parameters_raw = event['queryStringParameters'] if event.get('queryStringParameters') else {}
+        query_string_parameters = GetEntriesQueryParameters(**query_string_parameters_raw)
         s3_client = S3Client()
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
