@@ -1,0 +1,52 @@
+service: seisms-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.10
+  lambdaHashingVersion: 20201221
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  environment:
+    ${file(.env_config/${self:custom.stage}.env.json)}
+
+plugins:
+  - serverless-offline
+  - serverless-s3-local
+
+functions:
+  get-entries:
+    handler: src/seisms_handler.get_seisms
+    events:
+      - http:
+          path: seisms
+          method: get
+          request:
+            parameters:
+              querystrings:
+                url: true
+  create-entries:
+    handler: src/seisms_handler.create_seisms
+    events:
+      - http:
+          path: seisms
+          method: post
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  profile: ${opt:provider, 'serverless-dev'}
+  serverless-offline:
+    useChildProcesses: true
+  s3:
+    host: localhost
+    directory: /tmp/s3
+
+resources:
+  Resources:
+    SeismEntries:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: seisms-bucket
+  
