@@ -104,13 +104,13 @@ jobs:
       - name: Config serverless
         run: serverless config credentials --provider aws --key ${{ secrets.AWS_KEY_ID_PROD }} --secret ${{ secrets.AWS_SECRET_PROD }} -n serverless-deploy-seisms-prod --verbose
       
-      - name: Create Domain
-        run: sls create_domain -s prod -c serverless_prod.yml --verbose
-        env:
-          SLS_DEBUG: '*'
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID_PROD }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_PROD }}
+      # - name: Create Domain
+      #   run: sls create_domain -s prod -c serverless_prod.yml --verbose
+      #   env:
+      #     SLS_DEBUG: '*'
+      #     AWS_REGION: ${{ secrets.AWS_REGION }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID_PROD }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_PROD }}
       
                 
       - name: Install dependencies for layer

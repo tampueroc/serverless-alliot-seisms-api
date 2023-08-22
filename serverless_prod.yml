@@ -5,11 +5,13 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: python3.10
-  lambdaHashingVersion: 20201221
+  timeout: 60
   stage: ${self:custom.stage}
+  profile: ${self:custom.profile}
   region: ${self:custom.region}
+  versionFunctions: false
   environment:
-    ${file(.env_config/${self:custom.stage}.env.json)}
+    ${file(${self:custom.stage}.env.json)}
 
 layers:
   odoodependencies:
