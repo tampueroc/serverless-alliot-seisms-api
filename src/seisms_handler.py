@@ -36,11 +36,10 @@ def create_seisms(event: dict, context: dict):
         event_body = json.loads(event['body'])
         seisms_entries = [GetSeismPayload(**seism) for seism in event_body]
         s3_client = S3Client()
-        # Create folder for tmp files
         with open("seisms.csv", "w") as f:
-            f.write('timestamp, country, magnitude\n')
+            f.write('timestamp,country,magnitude\n')
             for seism in seisms_entries:
-                f.write(f"{seism.timestamp}, {seism.country}, {seism.magnitude}")
+                f.write(f"{seism.timestamp},{seism.country},{seism.magnitude}")
                 f.write('\n')
             s3_client.upload_file(f.name, 'seisms-bucket', f.name)
             f.close()

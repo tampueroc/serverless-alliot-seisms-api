@@ -50,10 +50,12 @@ functions:
 
 custom:
   stage: ${opt:stage, 'prod'}
-  region: ${opt:region, 'us-east-2'}
+  region: ${opt:region, 'us-east-1'}
   profile: ${opt:provider, 'serverless-deploy-seisms-prod'}
   serverless-offline:
     useChildProcesses: true
+  layers:
+      - !Ref SeismsdependenciesLambdaLayer
 
 resources:
   Resources:
