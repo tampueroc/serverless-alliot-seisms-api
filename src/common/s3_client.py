@@ -45,7 +45,8 @@ class S3Client:
             for event in event_stream:
                 if 'Records' in event:
                     logging.info(f"Adding data to response: {event['Records']['Payload'].decode('utf-8')}")
-                    data.append(json.loads(event['Records']['Payload'].decode('utf-8')))
+                    for record in event['Records']['Payload'].decode('utf-8').split(','):
+                        data.append(json.loads(record))
                 elif 'End' in event:
                     print('Result is complete')
                     end_event_received = True
