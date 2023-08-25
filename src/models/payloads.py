@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class GetSeismPayload(BaseModel):
+class SeismEntry(BaseModel):
     timestamp: int
     country: str
     magnitude: float

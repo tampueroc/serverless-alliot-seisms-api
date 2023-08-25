@@ -6,7 +6,7 @@ from .common.utils import create_http_response
 
 from .common.s3_client import S3Client
 
-from .models.payloads import GetEntriesQueryParameters, GetSeismPayload
+from .models.payloads import GetEntriesQueryParameters, SeismEntry
 logging.getLogger().setLevel(logging.INFO)
 
 
@@ -22,9 +22,9 @@ def get_seisms(event: dict, context: dict):
         if len(s3_response) > 100:
             logging.error(f"Error in get_seisms lambda function: Too many entries, {len(s3_response)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
-        entries = [GetSeismPayload(**entry) for entry in s3_response]
+        entries = [SeismEntry(**entry) for entry in s3_response]
         entries.sort(key=lambda x: x.timestamp)
-        return create_http_response(200, entries)
+        return create_http_response(200, [entry.model_dump_json for entry in entries])
     except Exception as e:
         logging.exception(f"Exception in get_seisms lambda function: {e}")
         return create_http_response(500, 'Internal Server Error')
@@ -39,7 +39,7 @@ def create_seisms(event: dict, context: dict):
                 'statusCode': 400,
                 'body': json.dumps('Bad Request')
             }
-        seisms_entries = [GetSeismPayload(**seism) for seism in event_body]
+        seisms_entries = [SeismEntry(**seism) for seism in event_body]
         s3_client = S3Client()
         filename = '/tmp/seisms.csv'
         seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.csv')
