@@ -17,6 +17,11 @@ provider:
   iam:
     role:
       statements:
+        - Effect: Allow
+          Action:
+            - s3:GetBucketLocation
+          Resource:
+            - arn:aws:s3:::*
         - Effect: 'Allow' 
           Action:
           - 's3:PutObject'
