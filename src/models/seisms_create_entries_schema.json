@@ -4,9 +4,7 @@
       "data": {
         "type": "array",
         "maxItems": 100
-      },
-      "required": ["timestamp", "country", "magnitude"],
-      "additionalProperties": false
+      }
     }
   }
   

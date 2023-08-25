@@ -22,6 +22,8 @@ def get_seisms(event: dict, context: dict):
                 'statusCode': 400,
                 'body': json.dumps('Bad Request')
             }
+        entries = [GetSeismPayload(**entry) for entry in s3_response]
+        entries.sort(key=lambda x: x.timestamp)
         return {
             'statusCode': 200,
             'body': json.dumps(s3_response)
