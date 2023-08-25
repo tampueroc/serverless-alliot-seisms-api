@@ -30,7 +30,7 @@ class GetEntriesQueryParameters(BaseModel):
             query += f"CAST(s.magnitude as float) >= {self.magnitudeLower} AND "
         if self.magnitudeUpper:
             query += f"CAST(s.magnitude as float) <= {self.magnitudeUpper} AND "
-        query += "1 = 1 "  # To avoid errors when no parameters are passed
+        query += "1 = 1 LIMIT 100 "  # To avoid errors when no parameters are passed
         if self.skip:
-            query += f"LIMIT 100 OFFSET {self.skip}"
+            query += f"OFFSET {self.skip}"
         return query
