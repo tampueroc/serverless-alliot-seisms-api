@@ -29,6 +29,7 @@ provider:
           - 's3:GetObject'
           Resource:
             - arn:aws:s3:::seisms-bucket/*
+            - arn:aws:s3:::seisms-bucket-results/*
         - Effect: 'Allow'
           Action:
           - 'logs:CreateLogStream'
