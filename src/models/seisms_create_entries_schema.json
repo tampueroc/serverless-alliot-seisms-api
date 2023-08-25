@@ -3,7 +3,7 @@
     "properties": {
       "data": {
         "type": "array",
-        "maxItems": 2
+        "maxItems": 100
       }
     }
   }
