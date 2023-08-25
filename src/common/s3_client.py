@@ -50,7 +50,6 @@ class S3Client:
                     for raw_record in raw_records:
                         if raw_record:
                             record = json.loads(raw_record)
-                            logging.info(f"Record: {record}")
                             data.append(record)
                 elif 'End' in event:
                     print('Result is complete')

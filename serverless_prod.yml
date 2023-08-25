@@ -22,6 +22,12 @@ provider:
           - 's3:GetObject'
           Resource:
             - arn:aws:s3:::seisms-bucket/*
+        - Effect: 'Allow'
+          Action:
+          - 'logs:CreateLogStream'
+          - 'logs:CreateLogGroup'
+          - 'logs:PutLogEvents'
+          Resource: '*'
 
 layers:
   seismsdependencies:
