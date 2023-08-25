@@ -1,5 +1,6 @@
 import boto3
 
+
 class AthenaClient:
 
     athena_client = boto3.client('athena')
@@ -18,4 +19,3 @@ class AthenaClient:
             return response
         except Exception as e:
             raise e
-    

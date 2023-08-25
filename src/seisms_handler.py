@@ -17,7 +17,7 @@ def get_seisms(event: dict, context: dict):
         logging.info(f"Starting get_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
         query_string_parameters_raw = event['queryStringParameters'] if event.get('queryStringParameters') else {}
         query_string_parameters = GetEntriesQueryParameters(**query_string_parameters_raw)
-        s3_client = S3Client()
+        # s3_client = S3Client()
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         # s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
         response = AthenaClient.execute_sql_query_on_bucket('seisms-bucket-results', query_string_parameters.to_sql_query())
