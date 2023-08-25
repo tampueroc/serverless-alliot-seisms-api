@@ -73,7 +73,7 @@ class S3Client:
             logging.info(f"Response from s3: {response}")
             return response
         except self.s3.exceptions.NoSuchKey:
-            logging.error(f"Error getting file from s3: NoSuchKey")
+            logging.error("Error getting file from s3: NoSuchKey")
             return False
         except Exception as e:
             logging.error(f"Error getting file from s3: {e}")
