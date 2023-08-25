@@ -38,22 +38,24 @@ class S3Client:
                 InputSerialization={'CSV': {'FileHeaderInfo': 'Use', 'FieldDelimiter': ','}},
                 OutputSerialization={'JSON': {'RecordDelimiter': '\n'}}
             )
-            logging.info(f"Response from s3: {response}")
             event_stream = response['Payload']
-            logging.info(f"Event stream: {event_stream}")
             data = []
             for event in event_stream:
-                if 'Records' in event:
-                    logging.info(f"Records event: {event}")
-                    raw_records = event['Records']['Payload'].decode('utf-8').split('\n')
-                    logging.info(f"Raw records: {raw_records}")
-                    for raw_record in raw_records:
-                        if raw_record:
-                            record = json.loads(raw_record)
-                            data.append(record)
-                elif 'End' in event:
-                    print('Result is complete')
-                    end_event_received = True
+                try:
+                    if 'Records' in event:
+                        logging.info(f"Records event: {event}")
+                        raw_records = event['Records']['Payload'].decode('utf-8').split('\n')
+                        logging.info(f"Raw records: {raw_records}")
+                        for raw_record in raw_records:
+                            if raw_record:
+                                record = json.loads(raw_record)
+                                data.append(record)
+                    elif 'End' in event:
+                        print('Result is complete')
+                        end_event_received = True
+                except Exception as e:
+                    logging.error(f"Error parsing S3 file EventStream: {e}")
+                    raise e
             if not end_event_received:
                 raise Exception("End event not received, request incomplete.")
             return data

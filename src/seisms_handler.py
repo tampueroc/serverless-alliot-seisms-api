@@ -27,7 +27,7 @@ def get_seisms(event: dict, context: dict):
         return create_http_response(200, json.dumps(entries, cls=CustomPydanticJSONEncoder))
     except Exception as e:
         logging.exception(f"Exception in get_seisms lambda function: {e}")
-        return create_http_response(500, 'Internal Server Error')
+        return create_http_response(500, json.dumps({"message": 'Internal Server Error'}))
 
 
 def create_seisms(event: dict, context: dict):
@@ -35,30 +35,27 @@ def create_seisms(event: dict, context: dict):
         logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
         event_body = json.loads(event['body'])
         if len(event_body) > 100:
+            logging.error(f"Error in create_seisms lambda function: Too many entries, {len(event_body)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
         seisms_entries = [SeismEntry(**seism) for seism in event_body]
         s3_client = S3Client()
         filename = '/tmp/seisms.csv'
         seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.csv')
         with open(filename, "w") as f:
-            if seism_file:
-                logging.info("Extending seisms from s3")
-                f.write(seism_file['Body'].read().decode('utf-8'))
-            else:
-                f.write('timestamp,country,magnitude\n')
-            for seism in seisms_entries:
-                logging.info(f"Writing seism {seism}")
-                f.write(f"{seism.timestamp},{seism.country},{seism.magnitude}")
-                f.write('\n')
-            f.close()
+            try:
+                if seism_file:
+                    logging.info("Extending seisms from s3")
+                    f.write(seism_file['Body'].read().decode('utf-8'))
+                else:
+                    f.write('timestamp,country,magnitude\n')
+                for seism in seisms_entries:
+                    f.write(f"{seism.timestamp},{seism.country},{seism.magnitude}")
+                    f.write('\n')
+                f.close()
+            except Exception as e:
+                logging.exception(f"Exception writing seism entries to file: {e}")
             s3_client.upload_file(filename, 'seisms-bucket', 'seisms.csv')
-        return {
-            'statusCode': 200,
-            'body': json.dumps('message: Seisms entries created successfully')
-        }
+        return create_http_response(200, 'Success creating seisms entries')
     except Exception as e:
-        print(e)
-        return {
-            'statusCode': 500,
-            'body': json.dumps('Internal Server Error')
-        }
+        logging.exception(f"Exception in create_seisms lambda function: {e}")
+        return create_http_response(500, json.dumps({"message": 'Internal Server Error'}))
