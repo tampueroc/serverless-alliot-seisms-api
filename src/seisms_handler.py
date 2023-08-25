@@ -19,7 +19,7 @@ def get_seisms(event: dict, context: dict):
         # s3_client = S3Client()
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         # s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
-        response = AthenaClient.execute_sql_query_on_bucket('seisms-bucket-results', query_string_parameters.to_sql_query())
+        response = AthenaClient.execute_sql_query_on_bucket(bucket_name='seisms-bucket-results', query=query_string_parameters.to_sql_query())
         logging.info(f"Response from s3: {response}")
         if len(response) > 100:
             logging.error(f"Error in get_seisms lambda function: Too many entries, {len(response)}")
