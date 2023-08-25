@@ -24,7 +24,7 @@ def get_seisms(event: dict, context: dict):
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
         entries = [GetSeismPayload(**entry) for entry in s3_response]
         entries.sort(key=lambda x: x.timestamp)
-        return create_http_response(200, [entry.to_dict() for entry in entries])
+        return create_http_response(200, entries)
     except Exception as e:
         logging.exception(f"Exception in get_seisms lambda function: {e}")
         return create_http_response(500, 'Internal Server Error')
