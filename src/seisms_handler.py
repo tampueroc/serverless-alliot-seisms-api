@@ -36,6 +36,10 @@ def create_seisms(event: dict, context: dict):
         seisms_entries = [GetSeismPayload(**seism) for seism in event_body]
         s3_client = S3Client()
         filename = '/tmp/seisms.csv'
+        seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.csv')
+        if seism_file:
+            logging.info(f"Seism file: {seism_file}")
+            pass
         with open(filename, "w") as f:
             f.write('timestamp,country,magnitude\n')
             for seism in seisms_entries:
