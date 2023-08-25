@@ -5,6 +5,7 @@ class AthenaClient:
 
     athena_client = boto3.client('athena')
 
+    @classmethod
     def execute_sql_query_on_bucket(cls, bucket_name, query):
         try:
             response = cls.athena_client.start_query_execution(
