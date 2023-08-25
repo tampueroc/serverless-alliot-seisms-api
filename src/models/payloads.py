@@ -22,7 +22,7 @@ class GetEntriesQueryParameters(BaseModel):
 
     def to_sql_query(self, limit=100):
         try:
-            query = """SELECT * FROM s3object s WHERE """
+            query = """SELECT * FROM "seism_database"."seism_table" WHERE """
             if self.country:
                 query += f"s.country = '{self.country}' AND "
             if self.dateLower:
