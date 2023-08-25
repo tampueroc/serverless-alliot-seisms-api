@@ -30,7 +30,7 @@ provider:
           - 'logs:CreateLogGroup'
           - 'logs:PutLogEvents'
           Resource: '*'
-        - Effect: 'Allow':
+        - Effect: 'Allow'
           Action:
           - 'athena:*'
           Resource: 'arn:aws:lambda:us-east-1:*:function:seisms-api-prod-get-entries'
