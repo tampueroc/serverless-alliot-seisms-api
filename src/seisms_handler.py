@@ -2,6 +2,8 @@ import datetime
 import json
 import logging
 
+from common.athena_client import AthenaClient
+
 from .common.encoders import CustomPydanticJSONEncoder
 from .common.utils import create_http_response
 from .common.s3_client import S3Client
@@ -17,12 +19,13 @@ def get_seisms(event: dict, context: dict):
         query_string_parameters = GetEntriesQueryParameters(**query_string_parameters_raw)
         s3_client = S3Client()
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
-        s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
-        logging.info(f"Response from s3: {s3_response}")
-        if len(s3_response) > 100:
-            logging.error(f"Error in get_seisms lambda function: Too many entries, {len(s3_response)}")
+        # s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
+        response = AthenaClient.execute_sql_query_on_bucket('seisms-bucket-results', query_string_parameters.to_sql_query())
+        logging.info(f"Response from s3: {response}")
+        if len(response) > 100:
+            logging.error(f"Error in get_seisms lambda function: Too many entries, {len(response)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
-        entries = [SeismEntry(**entry) for entry in s3_response]
+        entries = [SeismEntry(**entry) for entry in response]
         entries.sort(key=lambda x: x.timestamp)
         return create_http_response(200, json.dumps(entries, cls=CustomPydanticJSONEncoder))
     except Exception as e:
