@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 logging.getLogger().setLevel(logging.INFO)
 
+
 class SeismEntry(BaseModel):
     timestamp: int
     country: str
