@@ -67,6 +67,8 @@ package:
 functions:
   get-entries:
     handler: src/seisms_handler.get_seisms
+    layers:
+      - !Ref SeismsdependenciesLambdaLayer
     events:
       - http:
           path: seisms
@@ -82,6 +84,8 @@ functions:
                 skip: false
   create-entries:
     handler: src/seisms_handler.create_seisms
+    layers:
+      - !Ref SeismsdependenciesLambdaLayer
     events:
       - http:
           path: seisms
