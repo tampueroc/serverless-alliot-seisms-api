@@ -20,3 +20,13 @@ class AthenaClient:
             return response
         except Exception as e:
             raise e
+
+    @classmethod
+    def get_query_execution(cls, query_execution_id):
+        try:
+            response = cls.athena_client.get_query_execution(
+                QueryExecutionId=query_execution_id
+            )
+            return response
+        except Exception as e:
+            raise e
