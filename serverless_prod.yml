@@ -12,6 +12,8 @@ provider:
   versionFunctions: false
   environment:
     ${file(${self:custom.stage}.env.json)}
+  logs:
+    restApi: true
   iam:
     role:
       statements:
