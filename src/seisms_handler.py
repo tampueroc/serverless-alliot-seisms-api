@@ -1,13 +1,12 @@
 import datetime
 import json
 import logging
-from pydantic.json import pydantic_encoder
 
+from .common.encoders import CustomPydanticJSONEncoder
 from .common.utils import create_http_response
-
 from .common.s3_client import S3Client
-
 from .models.payloads import GetEntriesQueryParameters, SeismEntry
+
 logging.getLogger().setLevel(logging.INFO)
 
 
@@ -25,7 +24,7 @@ def get_seisms(event: dict, context: dict):
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
         entries = [SeismEntry(**entry) for entry in s3_response]
         entries.sort(key=lambda x: x.timestamp)
-        return create_http_response(200, json.dumps(entries, default=pydantic_encoder))
+        return create_http_response(200, json.dumps(entries, default=CustomPydanticJSONEncoder))
     except Exception as e:
         logging.exception(f"Exception in get_seisms lambda function: {e}")
         return create_http_response(500, 'Internal Server Error')
