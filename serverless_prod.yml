@@ -40,6 +40,10 @@ provider:
           Action:
           - 'athena:*'
           Resource: '*'
+        - Effect: 'Allow'
+          Action:
+          - 'glue:GetTable'
+          Resource: 'arn:aws:glue:us-east-1:502666848621:catalog'
 
 layers:
   seismsdependencies:
