@@ -1,4 +1,5 @@
 import datetime
+import io
 import json
 import logging
 import pandas as pd
@@ -38,7 +39,7 @@ def get_seisms(event: dict, context: dict):
 
 def create_seisms(event: dict, context: dict):
     try:
-        logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
+        # logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
         event_body = json.loads(event['body'])
         if len(event_body) > 100:
             logging.error(f"Error in create_seisms lambda function: Too many entries, {len(event_body)}")
@@ -48,18 +49,18 @@ def create_seisms(event: dict, context: dict):
         s3_client = S3Client()
         filename = '/tmp/seisms.parq'
         seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.parq')
-        with open(filename, "w") as f:
+        if seism_file:
             try:
-                if seism_file:
-                    logging.info("Extending seisms from s3")
-                    f.write(seism_file['Body'].read().decode('utf-8'))
-                else:
-                    f.write(df.to_parquet())
-                f.close()
+                logging.info("Appending new seisms entries to existing seisms file")
+                pq_file = io.BytesIO(seism_file['Body'].read())
+                df_base = pd.read_parquet(pq_file)
+                df = pd.concat([df_base, df])
             except Exception as e:
-                logging.exception(f"Exception writing seism entries to file: {e}")
-            s3_client.upload_file(filename, 'seisms-bucket', 'seisms.parq')
-        return create_http_response(200, 'Success creating seisms entries')
+                logging.exception(f"Exception appending seism entries to file: {e}")
+                raise e
+        df.to_parquet(filename)
+        s3_client.upload_file(filename, 'seisms-bucket', 'seisms.parq')
+        return create_http_response(200, json.dumps({'message': 'Success creating seisms entries'}))
     except Exception as e:
         logging.exception(f"Exception in create_seisms lambda function: {e}")
         return create_http_response(500, json.dumps({"message": 'Internal Server Error'}))
