@@ -1,10 +1,13 @@
 {
+  "type": "array",
+  "maxItems": 100,
+  "items": {
     "type": "object",
     "properties": {
-      "data": {
-        "type": "array",
-        "maxItems": 100
-      }
-    }
+      "timestamp": { "type": "integer" },
+      "country": { "type": "string" },
+      "magnitude": { "type": "number" }
+    },
+    "required": ["timestamp", "country", "magnitude"]
   }
-  
+}
