@@ -43,7 +43,7 @@ provider:
         - Effect: 'Allow'
           Action:
           - 'glue:GetTable'
-          Resource: 
+          Resource:
             - 'arn:aws:glue:us-east-1:502666848621:catalog'
             - 'arn:aws:glue:us-east-1:502666848621:database/seisms_database'
 
