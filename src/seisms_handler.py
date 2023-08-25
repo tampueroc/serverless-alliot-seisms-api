@@ -38,7 +38,7 @@ def create_seisms(event: dict, context: dict):
         filename = '/tmp/seisms.csv'
         seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.csv')
         if seism_file:
-            logging.info(f"Seism file: {seism_file}")
+            logging.info(f"Seism file: {seism_file.get('Payload')}")
             pass
         with open(filename, "w") as f:
             f.write('timestamp,country,magnitude\n')
