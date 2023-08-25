@@ -61,3 +61,16 @@ class S3Client:
         except Exception as e:
             logging.error(f"Error getting files from s3: {e}")
             raise e
+
+    def get_file_by_key(self, bucket_name, key):
+        try:
+            logging.info(f"Getting file from s3 bucket {bucket_name} with key {key}")
+            response = self.s3.get_object(
+                Bucket=bucket_name,
+                Key=key
+            )
+            logging.info(f"Response from s3: {response}")
+            return response
+        except Exception as e:
+            logging.error(f"Error getting file from s3: {e}")
+            raise e
