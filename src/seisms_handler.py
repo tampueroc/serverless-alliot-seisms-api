@@ -17,6 +17,11 @@ def get_seisms(event: dict, context: dict):
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
         logging.info(f"Response from s3: {s3_response}")
+        if len(s3_response) > 100:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('Bad Request')
+            }
         return {
             'statusCode': 200,
             'body': json.dumps(s3_response)
@@ -33,6 +38,11 @@ def create_seisms(event: dict, context: dict):
     try:
         logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event} and context: {context}")
         event_body = json.loads(event['body'])
+        if len(event_body) > 100:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('Bad Request')
+            }
         seisms_entries = [GetSeismPayload(**seism) for seism in event_body]
         s3_client = S3Client()
         filename = '/tmp/seisms.csv'

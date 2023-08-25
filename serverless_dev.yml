@@ -32,6 +32,9 @@ functions:
       - http:
           path: seisms
           method: post
+          request:
+            schemas:
+              application/json: ${file(models/seisms_create_entries_schema.json)}
 
 custom:
   stage: ${opt:stage, 'dev'}
