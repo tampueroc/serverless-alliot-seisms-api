@@ -14,7 +14,7 @@ class AthenaClient:
                     'Database': 'seisms_database'
                 },
                 ResultConfiguration={
-                    'OutputLocation': f's3://{bucket_name}/results/'
+                    'OutputLocation': f's3://{bucket_name}'
                 }
             )
             return response
