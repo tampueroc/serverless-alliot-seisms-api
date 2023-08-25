@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 
-from common.utils import create_http_response
+from .common.utils import create_http_response
 
 from .common.s3_client import S3Client
 
