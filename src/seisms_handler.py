@@ -2,8 +2,7 @@ import datetime
 import json
 import logging
 
-from common.athena_client import AthenaClient
-
+from .common.athena_client import AthenaClient
 from .common.encoders import CustomPydanticJSONEncoder
 from .common.utils import create_http_response
 from .common.s3_client import S3Client
