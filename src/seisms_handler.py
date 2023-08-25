@@ -35,10 +35,7 @@ def create_seisms(event: dict, context: dict):
         logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
         event_body = json.loads(event['body'])
         if len(event_body) > 100:
-            return {
-                'statusCode': 400,
-                'body': json.dumps('Bad Request')
-            }
+            return create_http_response(400, 'Bad Request: Too many entries, more than 100')
         seisms_entries = [SeismEntry(**seism) for seism in event_body]
         s3_client = S3Client()
         filename = '/tmp/seisms.csv'
@@ -57,7 +54,7 @@ def create_seisms(event: dict, context: dict):
             s3_client.upload_file(filename, 'seisms-bucket', 'seisms.csv')
         return {
             'statusCode': 200,
-            'body': json.dumps('Ok')
+            'body': json.dumps('message: Seisms entries created successfully')
         }
     except Exception as e:
         print(e)
