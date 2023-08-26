@@ -1,3 +1,4 @@
+import csv
 import datetime
 import io
 import json
@@ -34,12 +35,10 @@ def get_seisms(event: dict, context: dict):
         logging.info(f"Response from Athena: {response_s3}")
         if response_s3:
             data = []
-            content = response_s3['Body'].read().decode('utf-8').split('\n')
-            for raw_record in content:
-                if raw_record:
-                    logging.info(f"Raw record: {raw_record}")
-                    record = json.loads(raw_record)
-                    data.append(record)
+            content = response_s3['Body'].read().decode('utf-8').splitlines(True)
+            reader = csv.reader(content)
+            for raw_record in reader:
+                data.append(SeismEntry(timestamp=raw_record['timestamp'], country=['country'], magnitude=['magnitude']))
         if len(data) > 100:
             logging.error(f"Error in get_seisms lambda function: Too many entries, {len(data)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
