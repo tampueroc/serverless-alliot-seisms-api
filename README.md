@@ -48,3 +48,5 @@ Cada Lambda se ejecuta sobre una Layer de la aplicacion, asi se reduce el tamañ
 - Se puede pulir la implementacion añadiendo un manejo de Exceptions mas robusto y revisando los loggings, sin embargo, se manejan los casos borde mas criticos.
 
 - La propiedad timestamp de las entradas esta en formato Unix considera fecha y tiempo (en UTC), sin embargo, los filtros dateLower y dateUpper consideran solo fecha. Esto entrega libertad para definir como abordar la hora, estrictamente se deberia asumir para la cota inferior 00:00 y para la cota superior 23:59.
+
+- Hay muchas validaciones redundantes (e.g validacion de ordenamiento de entradas, tamaño del payload, etc)
