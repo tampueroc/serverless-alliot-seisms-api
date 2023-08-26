@@ -29,7 +29,7 @@ def get_seisms(event: dict, context: dict):
             else:
                 logging.info(f"Query finished with state: {finish_state}")
                 break
-        response_s3 = s3_client.get_file_by_key('seism-bucket-results', response['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
+        response_s3 = s3_client.get_file_by_key('seism-bucket-results', finish_state['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
         logging.info(f"Response from Athena: {response_s3}")
         if response_s3:
             response = json.loads(response_s3['Body'].read())
