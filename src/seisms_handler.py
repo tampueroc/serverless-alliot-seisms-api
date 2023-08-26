@@ -23,7 +23,7 @@ def get_seisms(event: dict, context: dict):
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         response_id = AthenaClient.execute_sql_query_on_bucket(bucket_name='seism-bucket-results', query=query_string_parameters.to_sql_query())
         while True:
-            finish_state = AthenaClient.get_query_execution(QueryExecutionId=response_id['QueryExecutionId'])["QueryExecution"]["Status"]["State"]
+            finish_state = AthenaClient.get_query_execution(query_execution_id=response_id['QueryExecutionId'])["QueryExecution"]["Status"]["State"]
             if finish_state == "RUNNING" or finish_state == "QUEUED":
                 time.sleep(10)
             else:
