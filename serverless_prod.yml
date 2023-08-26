@@ -20,14 +20,15 @@ provider:
         - Effect: Allow
           Action:
             - 's3:GetBucketLocation'
+            - 's3:ListBucket'
           Resource:
             - arn:aws:s3:::*
         - Effect: 'Allow' 
           Action:
-          - 's3:ListBucket'
-          - 's3:PutObject'
-          - 's3:PutObjectAcl'
-          - 's3:GetObject'
+            - 's3:ListBucket'
+            - 's3:PutObject'
+            - 's3:PutObjectAcl'
+            - 's3:GetObject'
           Resource:
             - arn:aws:s3:::seisms-bucket/*
             - arn:aws:s3:::seism-bucket-results/*
@@ -35,19 +36,19 @@ provider:
             - arn:aws:s3:::seisms-bucket-results
         - Effect: 'Allow'
           Action:
-          - 'logs:CreateLogStream'
-          - 'logs:CreateLogGroup'
-          - 'logs:PutLogEvents'
+            - 'logs:CreateLogStream'
+            - 'logs:CreateLogGroup'
+            - 'logs:PutLogEvents'
           Resource: '*'
         - Effect: 'Allow'
           Action:
-          - 'athena:GetQueryExecution'
-          - 'athena:GetQueryResults'
-          - 'athena:StartQueryExecution'
+            - 'athena:GetQueryExecution'
+            - 'athena:GetQueryResults'
+            - 'athena:StartQueryExecution'
           Resource: '*'
         - Effect: 'Allow'
           Action:
-          - 'glue:GetTable'
+            - 'glue:GetTable'
           Resource:
             - '*'
 
