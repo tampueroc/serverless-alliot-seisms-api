@@ -32,7 +32,6 @@ def get_seisms(event: dict, context: dict):
                 logging.info(f"Query finished with state: {finish_state}")
                 break
         response_s3 = s3_client.get_file_by_key('seism-bucket-results', response_execution['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
-        logging.info(f"Response from Athena: {response_s3}")
         if response_s3:
             entries = []
             content = response_s3['Body'].read().decode('utf-8').splitlines(True)
@@ -40,7 +39,6 @@ def get_seisms(event: dict, context: dict):
             for raw_record in reader:
                 if raw_record[0] == 'timestamp':
                     continue
-                logging.info(f"Raw record: {raw_record}")
                 entries.append(SeismEntry(timestamp=raw_record[0], country=raw_record[1], magnitude=raw_record[2]))
         if len(entries) > 100:
             logging.error(f"Error in get_seisms lambda function: Too many entries, {len(entries)}")
@@ -55,7 +53,7 @@ def get_seisms(event: dict, context: dict):
 
 def create_seisms(event: dict, context: dict):
     try:
-        # logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
+        logging.info(f"Starting create_seisms lambda function {datetime.datetime.utcnow()} with event: {event}")
         event_body = json.loads(event['body'])
         if len(event_body) > 100:
             logging.error(f"Error in create_seisms lambda function: Too many entries, {len(event_body)}")

@@ -70,7 +70,6 @@ class S3Client:
                 Bucket=bucket_name,
                 Key=key
             )
-            logging.info(f"Response from s3: {response}")
             return response
         except self.s3.exceptions.NoSuchKey:
             logging.error("Error getting file from s3: NoSuchKey")
