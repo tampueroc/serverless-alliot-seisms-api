@@ -23,19 +23,20 @@ class GetEntriesQueryParameters(BaseModel):
     def to_sql_query(self, limit=100):
         try:
             query = """SELECT * FROM "seism_database"."seism_parquet" WHERE """
+            query += f"1 = 1 AND "  # To avoid errors when no parameters are passed
             if self.country:
-                query += f"s.country = '{self.country}' AND "
+                query += f"country = '{self.country}' AND "
             if self.dateLower:
-                query += f'CAST(s."timestamp" as int) >= {int(self.dateLower.strftime("%s"))} AND '
+                query += f'timestamp >= {int(self.dateLower.strftime("%s"))} AND '
             if self.dateUpper:
-                query += f'CAST(s."timestamp" as int) <= {int(self.dateUpper.strftime("%s"))} AND '
+                query += f'timestamp <= {int(self.dateUpper.strftime("%s"))} AND '
             if self.magnitudeLower:
-                query += f"CAST(s.magnitude as float) >= {self.magnitudeLower} AND "
+                query += f"magnitude >= {self.magnitudeLower} AND "
             if self.magnitudeUpper:
-                query += f"CAST(s.magnitude as float) <= {self.magnitudeUpper} AND "
-            query += f"1 = 1 LIMIT {limit}"  # To avoid errors when no parameters are passed
+                query += f"magnitude <= {self.magnitudeUpper} AND "
             if self.skip:
-                query += f" OFFSET {self.skip}"
+                query += f"OFFSET {self.skip} "
+            query += f"LIMIT {limit}" # Memory limit
             return query
         except Exception as e:
             logging.error(f"Error creating SQL query from query parameters: {e}")
