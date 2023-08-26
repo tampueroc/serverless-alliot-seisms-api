@@ -23,7 +23,7 @@ class GetEntriesQueryParameters(BaseModel):
     def to_sql_query(self, limit=100):
         try:
             query = """SELECT * FROM "seism_database"."seism_parquet" WHERE """
-            query += f"1 = 1 AND "  # To avoid errors when no parameters are passed
+            query += "1 = 1 AND "  # To avoid errors when no parameters are passed
             if self.country:
                 query += f"country = '{self.country}' AND "
             if self.dateLower:
@@ -36,7 +36,7 @@ class GetEntriesQueryParameters(BaseModel):
                 query += f"magnitude <= {self.magnitudeUpper} AND "
             if self.skip:
                 query += f"OFFSET {self.skip} "
-            query += f"LIMIT {limit}" # Memory limit
+            query += f"LIMIT {limit}"  # Memory limit
             return query
         except Exception as e:
             logging.error(f"Error creating SQL query from query parameters: {e}")
