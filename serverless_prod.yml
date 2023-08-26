@@ -40,14 +40,14 @@ provider:
           Resource: '*'
         - Effect: 'Allow'
           Action:
-          - 'athena:*'
+          - 'athena:GetQueryExecution'
+          - 'athena:GetQueryResults'
           Resource: '*'
         - Effect: 'Allow'
           Action:
           - 'glue:GetTable'
           Resource:
-            - 'arn:aws:glue:us-east-1:502666848621:catalog'
-            - 'arn:aws:glue:us-east-1:502666848621:database/seisms_database/*'
+            - '*'
 
 layers:
   seismsdependencies:
