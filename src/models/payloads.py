@@ -22,7 +22,7 @@ class GetEntriesQueryParameters(BaseModel):
 
     def to_sql_query(self, limit=100):
         try:
-            query = """SELECT * FROM "seism_database"."seism_parquet" ORDER BY timestamp ASC WHERE """
+            query = """SELECT * FROM "seism_database"."seism_parquet" WHERE """
             if self.country:
                 query += f"country = '{self.country}' AND "
             if self.dateLower:
@@ -34,6 +34,7 @@ class GetEntriesQueryParameters(BaseModel):
             if self.magnitudeUpper:
                 query += f"magnitude <= {self.magnitudeUpper} AND "
             query += "1 = 1 "  # Always true statement to avoid errors in case of no parameters
+            query += "ORDER BY timestamp ASC "
             if self.skip:
                 query += f"OFFSET {self.skip} "
             query += f"LIMIT {limit}"  # Memory limit
