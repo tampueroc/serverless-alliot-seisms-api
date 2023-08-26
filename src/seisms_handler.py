@@ -37,6 +37,7 @@ def get_seisms(event: dict, context: dict):
             content = response_s3['Body'].read().decode('utf-8').split('\n')
             for raw_record in content:
                 if raw_record:
+                    logging.info(f"Raw record: {raw_record}")
                     record = json.loads(raw_record)
                     data.append(record)
         if len(data) > 100:
