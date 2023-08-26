@@ -48,7 +48,7 @@ def create_seisms(event: dict, context: dict):
         df = pd.DataFrame([seism.model_dump() for seism in seisms_entries])
         s3_client = S3Client()
         filename = '/tmp/seisms.parq'
-        seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.parq')
+        seism_file = s3_client.get_file_by_key('seisms-bucket', 'seisms.parquet')
         if seism_file:
             try:
                 logging.info("Appending new seisms entries to existing seisms file")
@@ -59,7 +59,7 @@ def create_seisms(event: dict, context: dict):
                 logging.exception(f"Exception appending seism entries to file: {e}")
                 raise e
         df.to_parquet(filename)
-        s3_client.upload_file(filename, 'seisms-bucket', 'seisms.parq')
+        s3_client.upload_file(filename, 'seisms-bucket', 'seisms.parquet')
         return create_http_response(200, json.dumps({'message': 'Success creating seisms entries'}))
     except Exception as e:
         logging.exception(f"Exception in create_seisms lambda function: {e}")
