@@ -17,7 +17,9 @@ pip install -r requirements.txt
 ```
 ## Further information
 ### Solucion problemas de memoria para las lambdas:
+Se utilizo AWS Athena para realizar la query a el bucket de S3 donde se almacena el archivo parquet para almacenar las entradas. El limite de fija en la query SQL para respetar la restriccion de memoria. Con AWS Athena se realiza la query y luego los resultados se guardan en otro bucket de resultados en S3 para ser recuperados posteriormente.
 
+### Solucion descartada (no permitia OFFSET)
 Se ocupo la funcionalidad de S3 Select que permite recuperar datos de objetos en un bucket de S3 ocupando queries SQL, se barajo la opcion de ocupar AWS Athena para abordar esta restricción, sin embargo, se opto por ocupar esta funcionalidad igual de efectiva para la tarea bajo el supuesto que se ocupa un unico archivo dentro del bucket para almacenar los datos. AWS Athena es sin lugar a dudas una solucion mas robusta e extensible a diferencia de S3 Select que solo puede resolver queries para un caso particular.
 
 
