@@ -27,7 +27,7 @@ def get_seisms(event: dict, context: dict):
             response_execution = AthenaClient.get_query_execution(query_execution_id=response_id['QueryExecutionId'])
             finish_state = response_execution['QueryExecution']['Status']['State']
             if finish_state == "RUNNING" or finish_state == "QUEUED":
-                time.sleep(10)
+                time.sleep(1)
             else:
                 logging.info(f"Query finished with state: {finish_state}")
                 break
