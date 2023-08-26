@@ -38,6 +38,8 @@ def get_seisms(event: dict, context: dict):
             content = response_s3['Body'].read().decode('utf-8').splitlines(True)
             reader = csv.reader(content)
             for raw_record in reader:
+                if raw_record[0] == 'timestamp':
+                    continue
                 logging.info(f"Raw record: {raw_record}")
                 data.append(SeismEntry(timestamp=raw_record['timestamp'], country=['country'], magnitude=['magnitude']))
         if len(data) > 100:
