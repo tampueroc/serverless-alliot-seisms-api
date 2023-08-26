@@ -41,7 +41,7 @@ def get_seisms(event: dict, context: dict):
                 if raw_record[0] == 'timestamp':
                     continue
                 logging.info(f"Raw record: {raw_record}")
-                data.append(SeismEntry(timestamp=raw_record['timestamp'], country=['country'], magnitude=['magnitude']))
+                data.append(SeismEntry(timestamp=raw_record[0], country=[1], magnitude=[2]))
         if len(data) > 100:
             logging.error(f"Error in get_seisms lambda function: Too many entries, {len(data)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
