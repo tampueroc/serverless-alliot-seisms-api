@@ -22,7 +22,7 @@ class GetEntriesQueryParameters(BaseModel):
 
     def to_sql_query(self, limit=100):
         try:
-            query = """SELECT * FROM "seism_database"."seism_parquet" WHERE """
+            query = """SELECT * FROM "seism_database"."seism_parquet" ORDER BY timestamp ASC WHERE """
             query += "1 = 1 AND "  # To avoid errors when no parameters are passed
             if self.country:
                 query += f"country = '{self.country}' AND "
