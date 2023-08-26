@@ -59,4 +59,4 @@ Cada Lambda se ejecuta sobre una Layer de la aplicacion, asi se reduce el tamañ
 
 - Hay muchas validaciones redundantes (e.g validacion de ordenamiento de entradas, tamaño del payload, etc)
 
-- En ambiente de desarrollo con Serverless Offline no se puede probar S3 Select
+- ~~En ambiente de desarrollo con Serverless Offline no se puede probar S3 Select~~
