@@ -15,6 +15,14 @@ Install python requirements
 ```
 pip install -r requirements.txt
 ```
+Install node dependencies
+```
+npm install
+```
+Execute project offline
+```
+npx sls offline start -s dev -c serverless_dev.yml
+```
 ## Further information
 ### Solucion problemas de memoria para las lambdas:
 Se utilizo AWS Athena para realizar la query a el bucket de S3 donde se almacena el archivo parquet para almacenar las entradas. El limite se fija directamente en la query SQL para respetar la restriccion de memoria. Con AWS Athena se realiza la query y luego los resultados se guardan en otro bucket de resultados en S3 para ser recuperados posteriormente.
@@ -50,3 +58,5 @@ Cada Lambda se ejecuta sobre una Layer de la aplicacion, asi se reduce el tamañ
 - La propiedad timestamp de las entradas esta en formato Unix considera fecha y tiempo (en UTC), sin embargo, los filtros dateLower y dateUpper consideran solo fecha. Esto entrega libertad para definir como abordar la hora, estrictamente se deberia asumir para la cota inferior 00:00 y para la cota superior 23:59.
 
 - Hay muchas validaciones redundantes (e.g validacion de ordenamiento de entradas, tamaño del payload, etc)
+
+- En ambiente de desarrollo con Serverless Offline no se puede probar S3 Select
