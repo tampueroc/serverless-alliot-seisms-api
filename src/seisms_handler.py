@@ -20,13 +20,10 @@ def get_seisms(event: dict, context: dict):
         query_string_parameters = GetEntriesQueryParameters(**query_string_parameters_raw)
         s3_client = S3Client()
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
-        # s3_response = s3_client.get_files('seisms-bucket', query_string_parameters.to_sql_query())
         response_id = AthenaClient.execute_sql_query_on_bucket(bucket_name='seism-bucket-results', query=query_string_parameters.to_sql_query())
         if response_id.get('QueryExecutionId'):
             response = AthenaClient.get_query_execution(query_execution_id=response_id['QueryExecutionId'])
-            logging.info(f"Response from athena: {response}")
             response_s3 = s3_client.get_file_by_key('seism-bucket-results', response['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
-            logging.info(f"Response from s3: {response_s3}")
             if response_s3:
                 response = json.loads(response_s3['Body'].read())
             else:
