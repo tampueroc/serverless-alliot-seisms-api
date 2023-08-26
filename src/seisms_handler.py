@@ -33,11 +33,16 @@ def get_seisms(event: dict, context: dict):
         response_s3 = s3_client.get_file_by_key('seism-bucket-results', response_execution['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
         logging.info(f"Response from Athena: {response_s3}")
         if response_s3:
-            response = json.loads(response_s3['Body'].read())
-        if len(response) > 100:
-            logging.error(f"Error in get_seisms lambda function: Too many entries, {len(response)}")
+            data = []
+            content = response_s3['Body'].read().decode('utf-8').split('\n')
+            for raw_record in content:
+                if raw_record:
+                    record = json.loads(raw_record)
+                    data.append(record)
+        if len(data) > 100:
+            logging.error(f"Error in get_seisms lambda function: Too many entries, {len(data)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
-        entries = [SeismEntry(**entry) for entry in response]
+        entries = [SeismEntry(**entry) for entry in data]
         entries.sort(key=lambda x: x.timestamp)
         return create_http_response(200, json.dumps(entries, cls=CustomPydanticJSONEncoder))
     except Exception as e:
