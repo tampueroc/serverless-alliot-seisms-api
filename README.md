@@ -43,15 +43,15 @@ References:
 
 Se ocupo en conjunto de Github Actions, Github Secrets y Serverless Framework para armar un ciclo de CI/CD seguro protegido por PR a la rama main.
 
-## JSONSchema
+### JSONSchema
 
 Se aplico un JSONSchema a nivel de API Gateaway para añadir otra capa de proteccion al endpoint y validar la estructura y tamaño del payload al momento de crear las entradas (tratando de respetar la restriccion de memorias para Lambda, se asume que al invariante aplica a toda la aplicacion y no solo al metodo GET)
 
-## Layers
+### Layers
 
 Cada Lambda se ejecuta sobre una Layer de la aplicacion, asi se reduce el tamaño de la Lambda y se puede asegurar consistencia y versionamiento sobre las dependencias de la aplicacion.
 
-## Caveats
+### Caveats
 
 - Se puede pulir la implementacion añadiendo un manejo de Exceptions mas robusto y revisando los loggings, sin embargo, se manejan los casos borde mas criticos.
 
