@@ -22,7 +22,7 @@ class GetEntriesQueryParameters(BaseModel):
 
     def to_sql_query(self, limit=100):
         try:
-            query = """SELECT * FROM "seism_database"."seism_parquet" WHERE """
+            query = """SELECT * FROM "seism_database"."seism_data_parquet" WHERE """
             if self.country:
                 query += f"s.country = '{self.country}' AND "
             if self.dateLower:
