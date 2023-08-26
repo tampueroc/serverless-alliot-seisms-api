@@ -23,13 +23,14 @@ def get_seisms(event: dict, context: dict):
         logging.info(f"Query string parameters to sql query: {query_string_parameters.to_sql_query()}")
         response_id = AthenaClient.execute_sql_query_on_bucket(bucket_name='seism-bucket-results', query=query_string_parameters.to_sql_query())
         while True:
-            finish_state = AthenaClient.get_query_execution(query_execution_id=response_id['QueryExecutionId'])["QueryExecution"]["Status"]["State"]
+            response_execution = AthenaClient.get_query_execution(query_execution_id=response_id['QueryExecutionId'])
+            finish_state = response_execution['QueryExecution']['Status']['State']
             if finish_state == "RUNNING" or finish_state == "QUEUED":
                 time.sleep(10)
             else:
                 logging.info(f"Query finished with state: {finish_state}")
                 break
-        response_s3 = s3_client.get_file_by_key('seism-bucket-results', finish_state['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
+        response_s3 = s3_client.get_file_by_key('seism-bucket-results', response_execution['QueryExecution']['ResultConfiguration']['OutputLocation'].split('/')[-1])
         logging.info(f"Response from Athena: {response_s3}")
         if response_s3:
             response = json.loads(response_s3['Body'].read())
