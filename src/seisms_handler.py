@@ -45,6 +45,7 @@ def get_seisms(event: dict, context: dict):
         if len(entries) > 100:
             logging.error(f"Error in get_seisms lambda function: Too many entries, {len(entries)}")
             return create_http_response(400, 'Bad Request: Too many entries, more than 100')
+        entries : list[SeismEntry]
         entries.sort(key=lambda x: x.timestamp)
         return create_http_response(200, json.dumps(entries, cls=CustomPydanticJSONEncoder))
     except Exception as e:
