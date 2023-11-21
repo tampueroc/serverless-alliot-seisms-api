@@ -98,6 +98,13 @@ functions:
           request:
             schemas:
               application/json: ${file(src/models/seisms_create_entries_schema.json)}
+  scrapper-handler:
+    handler: src/scrapper_handler.parser_handler
+    layers:
+      - !Ref SeismsdependenciesLambdaLayer
+      - http:
+          path: seisms
+          method: get
 
 custom:
   stage: ${opt:stage, 'prod'}
